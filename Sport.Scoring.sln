@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ixcys.Tennis", "Ixcys.Tennis\Ixcys.Tennis.csproj", "{124D573E-DB7C-4391-92AF-07BF078FBFE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sport.Scoring.Tennis", "Ixcys.Tennis\Sport.Scoring.Tennis.csproj", "{124D573E-DB7C-4391-92AF-07BF078FBFE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ixcys.Tennis.Console", "Ixcys.Tennis.Console\Ixcys.Tennis.Console.csproj", "{01F269A2-C1D9-4C46-B65E-A8AF69A2EEB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sport.Scoring.Tennis.Console", "Ixcys.Tennis.Console\Sport.Scoring.Tennis.Console.csproj", "{01F269A2-C1D9-4C46-B65E-A8AF69A2EEB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
