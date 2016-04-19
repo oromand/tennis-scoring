@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Ixcys.Tennis.Console
 {
@@ -36,6 +32,19 @@ namespace Ixcys.Tennis.Console
                 TeamA = teamA,
                 TeamB = teamB
             };
+
+            while (true)
+            {
+                string team = System.Console.ReadLine();
+                if (team != "a" && team != "b" && team != "A" && team != "B")
+                {
+                    System.Console.WriteLine("Equipe invalide, doit-être A ou B");
+                }
+                else
+                {
+                    m.TeamScores(team.ToUpper());
+                }
+            }
         }
     }
 }
