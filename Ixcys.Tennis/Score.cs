@@ -20,6 +20,12 @@
                     break;
             }
         }
+
+        protected void reinitScores()
+        {
+            this.scoreA = 0;
+            this.scoreB = 0;
+        }
     }
 
     public class ScoreMatch : AbstractScore
@@ -110,10 +116,12 @@
             if (SetScore == SetA)
             {
                 this.Set.OnSetWon("A");
+                this.reinitScores();
             }
             else if (SetScore == SetB)
             {
                 this.Set.OnSetWon("B");
+                this.reinitScores();
             }
             else if (SetScore == TieBreak)
             {
@@ -169,10 +177,12 @@
             if (GameScore == GameA)
             {
                 this.Game.OnGameWon("A");
+                this.reinitScores();
             }
             else if (GameScore == GameB)
             {
                 this.Game.OnGameWon("B");
+                this.reinitScores();
             }
         }
 

@@ -33,6 +33,7 @@ namespace Ixcys.Tennis.Console
                 TeamB = teamB
             };
 
+            System.Console.WriteLine("match has started, enter team name (A or B):");
             while (true)
             {
                 string team = System.Console.ReadLine();
@@ -43,6 +44,7 @@ namespace Ixcys.Tennis.Console
                 else
                 {
                     m.TeamScores(team.ToUpper());
+                    System.Console.WriteLine("score in game is " + m.CurrentSet.CurrentGame.ScoreGame.GameScore);
                 }
             }
         }

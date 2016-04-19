@@ -7,6 +7,8 @@ namespace Ixcys.Tennis
     {
         public Team WinningTeam { get; set; }
     }
+
+
     public class Match
     {
         public event EventHandler<MatchEvent> MatchWon;
@@ -115,7 +117,7 @@ namespace Ixcys.Tennis
                 StartTime = new DateTime();
             }
 
-            this.ScoreMatch.AchieveScore(teamScore);
+            this.CurrentSet.CurrentGame.ScoreGame.AchieveScore(teamScore);
 
         }
 
