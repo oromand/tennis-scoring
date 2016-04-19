@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ixcys.Tennis
 {
-    public class MatchEvent: EventArgs
+    public class MatchEvent : EventArgs
     {
         public Team WinningTeam { get; set; }
     }
@@ -23,11 +20,18 @@ namespace Ixcys.Tennis
             this.Score = new Score();
 
             this.MatchWon += Match_MatchWon;
+
+            this.MatchStarted = false;
+            this.MatchFinnished = false;
         }
+
+        #region EVENT HANDLER
+
 
         private void Match_MatchWon(object sender, MatchEvent e)
         {
-            Console.WriteLine("Match won by team "+e.WinningTeam);
+            this.MatchFinnished = true;
+            Console.WriteLine("Match won by team " + e.WinningTeam);
         }
 
         /// <summary>
@@ -37,35 +41,43 @@ namespace Ixcys.Tennis
         /// <param name="e"></param>
         private void CurrentSet_SetWon(object sender, EventArgs e)
         {
+            Console.WriteLine("Set won ");
+
             this.Sets.Add(CurrentSet);
-            int nbSetTeamA =0, nbSetTeamB=0;
+            int nbSetTeamA = 0, nbSetTeamB = 0;
             //TODO optimize this with linq
             foreach (Set set in Sets)
             {
-                if(set.WinningTeam == TeamA)
+                if (set.WinningTeam == TeamA)
                 {
                     nbSetTeamA++;
-                } else if(set.WinningTeam == TeamB)
+                }
+                else if (set.WinningTeam == TeamB)
                 {
                     nbSetTeamB++;
                 }
             }
-            if(nbSetTeamA>=this.NbWinningSets || nbSetTeamB >=this.NbWinningSets)
+            if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
             {
                 EventHandler<MatchEvent> handler = MatchWon;
                 MatchEvent me = new MatchEvent();
                 me.WinningTeam = TeamA;
-                if(handler != null)
+                if (handler != null)
                 {
                     handler(this, me);
                 }
-            } else
+            }
+            else
             {
                 this.CurrentSet = new Set();
                 this.CurrentSet.SetWon += CurrentSet_SetWon;
             }
 
         }
+        #endregion
+
+
+        #region PROPERTIES
 
         public string MatchName { get; set; }
 
@@ -85,19 +97,32 @@ namespace Ixcys.Tennis
 
         public Team TeamB { get; set; }
 
-        
+        public DateTime StartTime { get; private set; }
+        public DateTime EndTime { get; private set; }
+
+        public Boolean MatchStarted { get; set; }
+        public Boolean MatchFinnished { get; set; }
+
+        #endregion
+
+        #region METHODS
 
         public void TeamScores(string teamScore)
         {
+            if (!MatchStarted)
+            {
+                MatchStarted = true;
+                StartTime = new DateTime();
+            }
             switch (teamScore)
             {
-                case 'A':
-                    Score.
-                    break;
-                case 'B':
-                    break;
-                default:
-                    break;
+                //case 'A':
+                //    Score.
+                //    break;
+                //case 'B':
+                //    break;
+                //default:
+                //    break;
             }
         }
 
@@ -106,4 +131,5 @@ namespace Ixcys.Tennis
 
         }
     }
+    #endregion
 }
