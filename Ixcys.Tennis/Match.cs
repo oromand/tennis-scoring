@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Ixcys.Tennis
 {
@@ -11,20 +12,26 @@ namespace Ixcys.Tennis
 
     public class Match
     {
-        public event EventHandler<MatchEvent> MatchWon;
+        public event EventHandler<MatchEvent> MatchWonHandler;
 
-        public Match(int nbWinningSets)
+        public event EventHandler<TeamScoredEvent> TeamScoredHandler;
+
+
+        public Match(WinningSet nbWinningSets)
         {
-            this.Sets = new List<Set>(nbWinningSets);
+            this.NbWinningSets = (int)nbWinningSets;
+            this.Sets = new List<Set>((int)nbWinningSets);
             this.CurrentSet = new Set();
             this.CurrentSet.SetWon += CurrentSet_SetWon;
 
             this.ScoreMatch = new ScoreMatch();
+            this.TeamScoredHandler += this.CurrentSet.CurrentGame.ScoreGame.TeamScored;
 
-            this.MatchWon += Match_MatchWon;
+            this.MatchWonHandler += Match_MatchWon;
 
             this.MatchStarted = false;
             this.MatchFinnished = false;
+
         }
 
         #region EVENT HANDLER
@@ -33,7 +40,9 @@ namespace Ixcys.Tennis
         private void Match_MatchWon(object sender, MatchEvent e)
         {
             this.MatchFinnished = true;
-            Console.WriteLine("Match won by team " + e.WinningTeam);
+            Console.WriteLine("Match won by team " + e.WinningTeam.Name);
+            Console.ReadKey();
+            Environment.Exit(0);
         }
 
         /// <summary>
@@ -45,6 +54,7 @@ namespace Ixcys.Tennis
         {
             Console.WriteLine("Set won ");
 
+            this.CurrentSet.SetWon -= CurrentSet_SetWon;
             this.Sets.Add(CurrentSet);
             int nbSetTeamA = 0, nbSetTeamB = 0;
             //TODO optimize this with linq
@@ -61,7 +71,7 @@ namespace Ixcys.Tennis
             }
             if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
             {
-                EventHandler<MatchEvent> handler = MatchWon;
+                EventHandler<MatchEvent> handler = MatchWonHandler;
                 MatchEvent me = new MatchEvent();
                 me.WinningTeam = TeamA;
                 if (handler != null)
@@ -117,14 +127,26 @@ namespace Ixcys.Tennis
                 StartTime = new DateTime();
             }
 
-            this.CurrentSet.CurrentGame.ScoreGame.AchieveScore(teamScore);
+            EventHandler<TeamScoredEvent> handler = TeamScoredHandler;
+            TeamScoredEvent teamScoredEvent = new TeamScoredEvent();
+            
+            switch (teamScore)
+            {
+                case "A":
+                    teamScoredEvent.Team = TeamA;
+                    break;
+                case "B":
+                    teamScoredEvent.Team = TeamB;
+                    break;
+                default: throw new Exception("Unknown team, should either be A or B");
+            }
+            if (handler != null)
+            {
+                handler(this, teamScoredEvent);
+            }
 
         }
 
-        public void GameWon(object sender, EventArgs e)
-        {
-
-        }
     }
     #endregion
 }

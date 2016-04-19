@@ -1,4 +1,6 @@
-﻿namespace Ixcys.Tennis
+﻿using System;
+
+namespace Ixcys.Tennis
 {
     public abstract class AbstractScore
     {
@@ -6,9 +8,10 @@
         protected int scoreB;
         public abstract void UpdateGameScore(ref int playerToAddScore, ref int opponentScore);
 
-        public void AchieveScore(string team)
+        public void AchieveScore(Team team)
         {
-            switch (team)
+            //TODO improve this
+            switch (team.Name)
             {
                 case "A":
                     UpdateGameScore(ref scoreA, ref scoreB);
@@ -78,6 +81,7 @@
         private const string SetB = "setB";
         private const string TieBreak = "tieBreak";
 
+
         public Set Set { get; set; }
 
         public ScoreSet(Set Set)
@@ -131,6 +135,8 @@
 
     }
 
+
+
     public class ScoreGame : AbstractScore
     {
         private const string GameA = "gameA";
@@ -159,6 +165,17 @@
             get { return GameScores[scoreB][scoreA]; }
         }
 
+        public void TeamScored(object sender, TeamScoredEvent args)
+        {
+            Team teamScored = args.Team;
+            if(teamScored is TeamA)
+            {
+                UpdateGameScore(ref scoreA, ref scoreB);
+            } else if(teamScored is TeamB)
+            {
+                UpdateGameScore(ref scoreB, ref scoreA);
+            }
+        }
 
         public override void UpdateGameScore(ref int playerToAddScore, ref int opponentScore)
         {

@@ -7,7 +7,7 @@ namespace Ixcys.Tennis.Console
         static void Main(string[] args)
         {
 
-            Team teamA = new Team();
+            Team teamA = new TeamA("A");
             teamA.Players = new List<Player>()
                 {
                     new Player()
@@ -16,7 +16,7 @@ namespace Ixcys.Tennis.Console
                         Name = "playerA"
                     }
                 };
-            Team teamB = new Team();
+            Team teamB = new TeamB("B");
             teamA.Players = new List<Player>()
                 {
                     new Player()
@@ -26,7 +26,7 @@ namespace Ixcys.Tennis.Console
                     }
                 };
 
-            Match m = new Match(3)
+            Match m = new Match(WinningSet.BEST_OF_FIVE)
             {
                 MatchName = "Tournament ABC",
                 TeamA = teamA,
@@ -45,6 +45,7 @@ namespace Ixcys.Tennis.Console
                 {
                     m.TeamScores(team.ToUpper());
                     System.Console.WriteLine("score in game is " + m.CurrentSet.CurrentGame.ScoreGame.GameScore);
+                    System.Console.WriteLine("score games in set is " + m.CurrentSet.ScoreSet.SetScore);
                 }
             }
         }

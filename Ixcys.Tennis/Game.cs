@@ -2,15 +2,10 @@
 
 namespace Ixcys.Tennis
 {
-    public class GameEvent : EventArgs
-    {
-        public String Team { get; set; }
-    }
 
     public class Game
     {
-
-        public event EventHandler<GameEvent> GameWon;
+        public event EventHandler<GameEvent> GameWonHandler;
 
         public Player Server { get; set; }
 
@@ -26,7 +21,7 @@ namespace Ixcys.Tennis
         /// </summary>
         public virtual void OnGameWon(String team)
         {
-            EventHandler<GameEvent> handler = GameWon;
+            EventHandler<GameEvent> handler = GameWonHandler;
             if (handler != null)
             {
                 GameEvent gameEvent = new GameEvent()

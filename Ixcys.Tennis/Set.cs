@@ -3,10 +3,12 @@ using System.Collections.Generic;
 
 namespace Ixcys.Tennis
 {
-    public class SetEvent : EventArgs
+
+    public enum WinningSet: int
     {
-        public String Team { get; set; }
-    }
+        BEST_OF_THREE=2,
+        BEST_OF_FIVE=3    
+    };
 
     public class Set
     {
@@ -22,7 +24,7 @@ namespace Ixcys.Tennis
         public Set()
         {
             this.CurrentGame = new Game();
-            CurrentGame.GameWon += CurrentGame_GameWon;
+            CurrentGame.GameWonHandler += CurrentGame_GameWon;
 
             this.ScoreSet = new ScoreSet(this);
         }
