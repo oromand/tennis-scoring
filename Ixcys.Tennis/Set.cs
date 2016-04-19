@@ -1,37 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ixcys.Tennis
 {
+    public class SetEvent : EventArgs
+    {
+        public String Team { get; set; }
+    }
+
     public class Set
     {
-        public event EventHandler SetWon;
+        public event EventHandler<SetEvent> SetWon;
 
         public List<Game> Games { get; set; }
 
         public Game CurrentGame { get; set; }
 
         public Team WinningTeam { get; set; }
+
+        public ScoreSet ScoreSet { get; private set; }
         public Set()
         {
             this.CurrentGame = new Game();
             CurrentGame.GameWon += CurrentGame_GameWon;
+
+            this.ScoreSet = new ScoreSet(this);
         }
 
-        private void CurrentGame_GameWon(object sender, EventArgs e)
+        private void CurrentGame_GameWon(object sender, GameEvent e)
         {
-            throw new NotImplementedException();
+            this.ScoreSet.AchieveScore(e.Team);
         }
 
-        protected virtual void OnSetWon(EventArgs e)
+        public virtual void OnSetWon(String team)
         {
-            EventHandler handler = SetWon;
+            EventHandler<SetEvent> handler = SetWon;
             if (handler != null)
             {
-                handler(this, e);
+                SetEvent setEvent = new SetEvent()
+                {
+                    Team = team,
+                };
+                handler(this, setEvent);
             }
         }
     }

@@ -17,7 +17,7 @@ namespace Ixcys.Tennis
             this.CurrentSet = new Set();
             this.CurrentSet.SetWon += CurrentSet_SetWon;
 
-            this.Score = new Score();
+            this.ScoreMatch = new ScoreMatch();
 
             this.MatchWon += Match_MatchWon;
 
@@ -91,7 +91,7 @@ namespace Ixcys.Tennis
 
         public Player Server { get; set; }
 
-        public Score Score { get; private set; }
+        public ScoreMatch ScoreMatch { get; private set; }
 
         public Team TeamA { get; set; }
 
@@ -114,16 +114,9 @@ namespace Ixcys.Tennis
                 MatchStarted = true;
                 StartTime = new DateTime();
             }
-            switch (teamScore)
-            {
-                //case 'A':
-                //    Score.
-                //    break;
-                //case 'B':
-                //    break;
-                //default:
-                //    break;
-            }
+
+            this.ScoreMatch.AchieveScore(teamScore);
+
         }
 
         public void GameWon(object sender, EventArgs e)

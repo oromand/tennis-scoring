@@ -1,32 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ixcys.Tennis
 {
+    public class GameEvent : EventArgs
+    {
+        public String Team { get; set; }
+    }
+
     public class Game
     {
 
-        public event EventHandler GameWon;
+        public event EventHandler<GameEvent> GameWon;
 
         public Player Server { get; set; }
 
-        public void AchievePoint()
+        public ScoreGame ScoreGame { get; private set; }
+
+        public Game()
         {
-            
+            this.ScoreGame = new ScoreGame(this);
         }
 
         /// <summary>
         /// notifies the match
         /// </summary>
-        protected virtual void OnGameWon(EventArgs e)
+        public virtual void OnGameWon(String team)
         {
-            EventHandler handler = GameWon;
+            EventHandler<GameEvent> handler = GameWon;
             if (handler != null)
             {
-                handler(this, e);
+                GameEvent gameEvent = new GameEvent()
+                {
+                    Team = team
+                };
+                handler(this, gameEvent);
             }
         }
     }
