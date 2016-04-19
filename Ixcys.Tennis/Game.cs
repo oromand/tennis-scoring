@@ -11,15 +11,19 @@ namespace Ixcys.Tennis
 
         public ScoreGame ScoreGame { get; private set; }
 
-        public Game()
+        public Set Set { get; set; }
+
+        public Game(Set set)
         {
+            this.Set = set;
+            
             this.ScoreGame = new ScoreGame(this);
         }
 
         /// <summary>
         /// notifies the match
         /// </summary>
-        public virtual void OnGameWon(String team)
+        public virtual void OnGameWon(Team team)
         {
             EventHandler<GameEvent> handler = GameWonHandler;
             if (handler != null)

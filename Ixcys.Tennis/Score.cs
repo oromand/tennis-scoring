@@ -165,7 +165,7 @@ namespace Ixcys.Tennis
             get { return GameScores[scoreB][scoreA]; }
         }
 
-        public void TeamScored(object sender, TeamScoredEvent args)
+        public void OnTeamScored(object sender, TeamScoredEvent args)
         {
             Team teamScored = args.Team;
             if(teamScored is TeamA)
@@ -174,6 +174,14 @@ namespace Ixcys.Tennis
             } else if(teamScored is TeamB)
             {
                 UpdateGameScore(ref scoreB, ref scoreA);
+            }
+
+            //trigger event here
+            //team who scored is certainly winning here
+            if (GameScore == GameA || GameScore == GameB)
+            {
+                this.Game.OnGameWon(teamScored);
+                this.reinitScores();
             }
         }
 
@@ -187,20 +195,7 @@ namespace Ixcys.Tennis
             {
                 playerToAddScore++;
             }
-
-            //register point to game
-
-            //trigger event here
-            if (GameScore == GameA)
-            {
-                this.Game.OnGameWon("A");
-                this.reinitScores();
-            }
-            else if (GameScore == GameB)
-            {
-                this.Game.OnGameWon("B");
-                this.reinitScores();
-            }
+           
         }
 
     }

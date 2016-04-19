@@ -12,7 +12,8 @@ namespace Ixcys.Tennis
 
     public class Set
     {
-        public event EventHandler<SetEvent> SetWon;
+        public event EventHandler<SetEvent> SetWonHandler;
+        public event EventHandler<GameEvent> GameWonHandler;
 
         public List<Game> Games { get; set; }
 
@@ -23,20 +24,22 @@ namespace Ixcys.Tennis
         public ScoreSet ScoreSet { get; private set; }
         public Set()
         {
-            this.CurrentGame = new Game();
-            CurrentGame.GameWonHandler += CurrentGame_GameWon;
+            this.CurrentGame = new Game(this);
+            CurrentGame.GameWonHandler += OnGameWon;
+
+            this.GameWonHandler += OnGameWon;
 
             this.ScoreSet = new ScoreSet(this);
         }
 
-        private void CurrentGame_GameWon(object sender, GameEvent e)
+        private void OnGameWon(object sender, GameEvent e)
         {
             this.ScoreSet.AchieveScore(e.Team);
         }
 
         public virtual void OnSetWon(String team)
         {
-            EventHandler<SetEvent> handler = SetWon;
+            EventHandler<SetEvent> handler = SetWonHandler;
             if (handler != null)
             {
                 SetEvent setEvent = new SetEvent()

@@ -22,12 +22,12 @@ namespace Ixcys.Tennis
             this.NbWinningSets = (int)nbWinningSets;
             this.Sets = new List<Set>((int)nbWinningSets);
             this.CurrentSet = new Set();
-            this.CurrentSet.SetWon += CurrentSet_SetWon;
+            this.CurrentSet.SetWonHandler += OnSetWon;
 
             this.ScoreMatch = new ScoreMatch();
-            this.TeamScoredHandler += this.CurrentSet.CurrentGame.ScoreGame.TeamScored;
+            this.TeamScoredHandler += this.CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
 
-            this.MatchWonHandler += Match_MatchWon;
+            this.MatchWonHandler += OnMatchWon;
 
             this.MatchStarted = false;
             this.MatchFinnished = false;
@@ -37,7 +37,7 @@ namespace Ixcys.Tennis
         #region EVENT HANDLER
 
 
-        private void Match_MatchWon(object sender, MatchEvent e)
+        private void OnMatchWon(object sender, MatchEvent e)
         {
             this.MatchFinnished = true;
             Console.WriteLine("Match won by team " + e.WinningTeam.Name);
@@ -50,11 +50,11 @@ namespace Ixcys.Tennis
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CurrentSet_SetWon(object sender, EventArgs e)
+        private void OnSetWon(object sender, EventArgs e)
         {
             Console.WriteLine("Set won ");
 
-            this.CurrentSet.SetWon -= CurrentSet_SetWon;
+            this.CurrentSet.SetWonHandler -= OnSetWon;
             this.Sets.Add(CurrentSet);
             int nbSetTeamA = 0, nbSetTeamB = 0;
             //TODO optimize this with linq
@@ -82,7 +82,7 @@ namespace Ixcys.Tennis
             else
             {
                 this.CurrentSet = new Set();
-                this.CurrentSet.SetWon += CurrentSet_SetWon;
+                this.CurrentSet.SetWonHandler += OnSetWon;
             }
 
         }
