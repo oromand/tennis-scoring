@@ -31,7 +31,8 @@ namespace Ixcys.Tennis
             //CurrentGame.GameWonHandler += OnGameWon;
             this.ScoreSet = new ScoreSet(this);
 
-            this.Match = Match;
+            this.Match = match;
+            this.Games = new List<Game>();
             //this.SetWonHandler += this.Match.ScoreMatch.OnSetWonHandler;
         }
 

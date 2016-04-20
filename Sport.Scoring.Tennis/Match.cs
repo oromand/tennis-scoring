@@ -65,6 +65,7 @@ namespace Ixcys.Tennis
         {
             Console.WriteLine("Set won ");
 
+            this.CurrentSet.WinningTeam = winningTeam;
             this.CurrentSet.SetWonHandler -= ScoreMatch.OnSetWonHandler;
             this.Sets.Add(CurrentSet);
             int nbSetTeamA = 0, nbSetTeamB = 0;
@@ -94,7 +95,9 @@ namespace Ixcys.Tennis
             else
             {
                 this.CurrentSet = new Set(this);
+                this.TeamScoredHandler += CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
                 this.CurrentSet.SetWonHandler += ScoreMatch.OnSetWonHandler;
+                this.CurrentSet.CurrentGame.GameWonHandler += CurrentSet.ScoreSet.OnGameWonHandler;
             }
 
         }
