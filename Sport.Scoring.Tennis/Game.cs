@@ -16,7 +16,8 @@ namespace Ixcys.Tennis
         public Game(Set set)
         {
             this.Set = set;
-            
+            this.GameWonHandler += Set.ScoreSet.OnGameWonHandler;
+
             this.ScoreGame = new ScoreGame(this);
         }
 

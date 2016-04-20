@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Ixcys.Tennis
+﻿namespace Ixcys.Tennis
 {
     public abstract class AbstractScore
     {
@@ -37,6 +35,12 @@ namespace Ixcys.Tennis
         private const string MatchA = "matchA";
         private const string MatchB = "matchB";
 
+        public Match Match { get; set; }
+
+        public ScoreMatch(Match match)
+        {
+            this.Match = match;
+        }
 
         public string MatchScore
         {
@@ -59,17 +63,26 @@ namespace Ixcys.Tennis
             {
                 playerToAddScore++;
             }
+        }
 
+        public void OnSetWonHandler(object sender, SetEvent e)
+        {
+            Team teamSetWon = e.Team;
+            if (teamSetWon is TeamA)
+            {
+                UpdateGameScore(ref scoreA, ref scoreB);
+            }
+            else if (teamSetWon is TeamB)
+            {
+                UpdateGameScore(ref scoreB, ref scoreA);
+            }
 
             //trigger event here
-            if (MatchScore == MatchA)
+            if (MatchScore == MatchA || MatchScore == MatchB)
             {
-
+                this.Match.OnMatchWon(teamSetWon);
             }
-            else if (MatchScore == MatchB)
-            {
 
-            }
         }
 
     }
@@ -114,17 +127,30 @@ namespace Ixcys.Tennis
             {
                 playerToAddScore++;
             }
+        }
 
+        /// <summary>
+        /// Get notified when a game has been won
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnGameWonHandler(object sender, GameEvent e)
+        {
+            Team teamGameWon = e.Team;
+            if (teamGameWon is TeamA)
+            {
+                UpdateGameScore(ref scoreA, ref scoreB);
+            }
+            else if (teamGameWon is TeamB)
+            {
+                UpdateGameScore(ref scoreB, ref scoreA);
+            }
 
             //trigger event here
-            if (SetScore == SetA)
+            //team who scored is certainly winning here
+            if (SetScore == SetA || SetScore == SetB)
             {
-                this.Set.OnSetWon("A");
-                this.reinitScores();
-            }
-            else if (SetScore == SetB)
-            {
-                this.Set.OnSetWon("B");
+                this.Set.OnSetWon(teamGameWon);
                 this.reinitScores();
             }
             else if (SetScore == TieBreak)
@@ -134,7 +160,6 @@ namespace Ixcys.Tennis
         }
 
     }
-
 
 
     public class ScoreGame : AbstractScore
@@ -168,10 +193,11 @@ namespace Ixcys.Tennis
         public void OnTeamScored(object sender, TeamScoredEvent args)
         {
             Team teamScored = args.Team;
-            if(teamScored is TeamA)
+            if (teamScored is TeamA)
             {
                 UpdateGameScore(ref scoreA, ref scoreB);
-            } else if(teamScored is TeamB)
+            }
+            else if (teamScored is TeamB)
             {
                 UpdateGameScore(ref scoreB, ref scoreA);
             }
@@ -195,8 +221,9 @@ namespace Ixcys.Tennis
             {
                 playerToAddScore++;
             }
-           
+
         }
+
 
     }
 }

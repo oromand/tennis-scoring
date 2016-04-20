@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Ixcys.Tennis
 {
@@ -12,7 +11,7 @@ namespace Ixcys.Tennis
 
     public class Match
     {
-        public event EventHandler<MatchEvent> MatchWonHandler;
+        //public event EventHandler<MatchEvent> MatchWonHandler;
 
         public event EventHandler<TeamScoredEvent> TeamScoredHandler;
 
@@ -21,13 +20,11 @@ namespace Ixcys.Tennis
         {
             this.NbWinningSets = (int)nbWinningSets;
             this.Sets = new List<Set>((int)nbWinningSets);
-            this.CurrentSet = new Set();
-            this.CurrentSet.SetWonHandler += OnSetWon;
+            this.CurrentSet = new Set(this);
 
-            this.ScoreMatch = new ScoreMatch();
+            this.ScoreMatch = new ScoreMatch(this);
+            //dispatch event to current handling ScoreGame object
             this.TeamScoredHandler += this.CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
-
-            this.MatchWonHandler += OnMatchWon;
 
             this.MatchStarted = false;
             this.MatchFinnished = false;
@@ -39,8 +36,13 @@ namespace Ixcys.Tennis
 
         private void OnMatchWon(object sender, MatchEvent e)
         {
+
+        }
+
+        internal void OnMatchWon(Team teamSetWon)
+        {
             this.MatchFinnished = true;
-            Console.WriteLine("Match won by team " + e.WinningTeam.Name);
+            Console.WriteLine("Match won by team " + teamSetWon.Name);
             Console.ReadKey();
             Environment.Exit(0);
         }
@@ -50,42 +52,44 @@ namespace Ixcys.Tennis
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnSetWon(object sender, EventArgs e)
-        {
-            Console.WriteLine("Set won ");
+        //public void OnSetWon(object sender, EventArgs e)
+        //{
+        //    Console.WriteLine("Set won ");
 
-            this.CurrentSet.SetWonHandler -= OnSetWon;
-            this.Sets.Add(CurrentSet);
-            int nbSetTeamA = 0, nbSetTeamB = 0;
-            //TODO optimize this with linq
-            foreach (Set set in Sets)
-            {
-                if (set.WinningTeam == TeamA)
-                {
-                    nbSetTeamA++;
-                }
-                else if (set.WinningTeam == TeamB)
-                {
-                    nbSetTeamB++;
-                }
-            }
-            if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
-            {
-                EventHandler<MatchEvent> handler = MatchWonHandler;
-                MatchEvent me = new MatchEvent();
-                me.WinningTeam = TeamA;
-                if (handler != null)
-                {
-                    handler(this, me);
-                }
-            }
-            else
-            {
-                this.CurrentSet = new Set();
-                this.CurrentSet.SetWonHandler += OnSetWon;
-            }
+        //    this.CurrentSet.SetWonHandler -= OnSetWon;
+        //    this.Sets.Add(CurrentSet);
+        //    int nbSetTeamA = 0, nbSetTeamB = 0;
+        //    //TODO optimize this with linq
+        //    foreach (Set set in Sets)
+        //    {
+        //        if (set.WinningTeam == TeamA)
+        //        {
+        //            nbSetTeamA++;
+        //        }
+        //        else if (set.WinningTeam == TeamB)
+        //        {
+        //            nbSetTeamB++;
+        //        }
+        //    }
+        //    if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
+        //    {
+        //        EventHandler<MatchEvent> handler = MatchWonHandler;
+        //        MatchEvent me = new MatchEvent();
+        //        me.WinningTeam = TeamA;
+        //        if (handler != null)
+        //        {
+        //            handler(this, me);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        this.CurrentSet = new Set();
+        //        this.CurrentSet.SetWonHandler += OnSetWon;
+        //    }
 
-        }
+        //}
+
+
         #endregion
 
 
@@ -129,7 +133,7 @@ namespace Ixcys.Tennis
 
             EventHandler<TeamScoredEvent> handler = TeamScoredHandler;
             TeamScoredEvent teamScoredEvent = new TeamScoredEvent();
-            
+
             switch (teamScore)
             {
                 case "A":
