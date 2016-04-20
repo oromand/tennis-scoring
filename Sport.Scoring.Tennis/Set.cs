@@ -12,7 +12,7 @@ namespace Ixcys.Tennis
 
     public class Set
     {
-        public event EventHandler<MatchEvent> MatchWonHandler;
+        //public event EventHandler<MatchEvent> MatchWonHandler;
         public event EventHandler<SetEvent> SetWonHandler;
         //public event EventHandler<GameEvent> GameWonHandler;
 
@@ -32,7 +32,7 @@ namespace Ixcys.Tennis
             this.ScoreSet = new ScoreSet(this);
 
             this.Match = Match;
-            this.SetWonHandler += this.Match.ScoreMatch.OnSetWonHandler;
+            //this.SetWonHandler += this.Match.ScoreMatch.OnSetWonHandler;
         }
 
         public void OnSetWon(Team setWonTeam)

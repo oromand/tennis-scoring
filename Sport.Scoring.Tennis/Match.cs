@@ -22,22 +22,31 @@ namespace Ixcys.Tennis
             this.Sets = new List<Set>((int)nbWinningSets);
             this.CurrentSet = new Set(this);
 
-            this.ScoreMatch = new ScoreMatch(this);
+            switch (nbWinningSets)
+            {
+                case WinningSet.BEST_OF_THREE:
+                    this.ScoreMatch = new BestOfThreeScoreMatch(this);
+                    break;
+                case WinningSet.BEST_OF_FIVE:
+                    this.ScoreMatch = new BestOfFiveScoreMatch(this);
+                    break;
+                default:
+                    break;
+            }
             //dispatch event to current handling ScoreGame object
             this.TeamScoredHandler += this.CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
 
             this.MatchStarted = false;
             this.MatchFinnished = false;
 
+
+            //register events
+            this.CurrentSet.CurrentGame.GameWonHandler += CurrentSet.ScoreSet.OnGameWonHandler;
+            this.CurrentSet.SetWonHandler += ScoreMatch.OnSetWonHandler;
+
         }
 
         #region EVENT HANDLER
-
-
-        private void OnMatchWon(object sender, MatchEvent e)
-        {
-
-        }
 
         internal void OnMatchWon(Team teamSetWon)
         {
@@ -52,42 +61,43 @@ namespace Ixcys.Tennis
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        //public void OnSetWon(object sender, EventArgs e)
-        //{
-        //    Console.WriteLine("Set won ");
+        public void OnSetWon(Team winningTeam)
+        {
+            Console.WriteLine("Set won ");
 
-        //    this.CurrentSet.SetWonHandler -= OnSetWon;
-        //    this.Sets.Add(CurrentSet);
-        //    int nbSetTeamA = 0, nbSetTeamB = 0;
-        //    //TODO optimize this with linq
-        //    foreach (Set set in Sets)
-        //    {
-        //        if (set.WinningTeam == TeamA)
-        //        {
-        //            nbSetTeamA++;
-        //        }
-        //        else if (set.WinningTeam == TeamB)
-        //        {
-        //            nbSetTeamB++;
-        //        }
-        //    }
-        //    if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
-        //    {
-        //        EventHandler<MatchEvent> handler = MatchWonHandler;
-        //        MatchEvent me = new MatchEvent();
-        //        me.WinningTeam = TeamA;
-        //        if (handler != null)
-        //        {
-        //            handler(this, me);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        this.CurrentSet = new Set();
-        //        this.CurrentSet.SetWonHandler += OnSetWon;
-        //    }
+            this.CurrentSet.SetWonHandler -= ScoreMatch.OnSetWonHandler;
+            this.Sets.Add(CurrentSet);
+            int nbSetTeamA = 0, nbSetTeamB = 0;
+            //TODO optimize this with linq
+            foreach (Set set in Sets)
+            {
+                if (set.WinningTeam == TeamA)
+                {
+                    nbSetTeamA++;
+                }
+                else if (set.WinningTeam == TeamB)
+                {
+                    nbSetTeamB++;
+                }
+            }
 
-        //}
+            if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
+            {
+                EventHandler<MatchEvent> handler = MatchWonHandler;
+                MatchEvent me = new MatchEvent();
+                me.WinningTeam = TeamA;
+                if (handler != null)
+                {
+                    handler(this, me);
+                }
+            }
+            else
+            {
+                this.CurrentSet = new Set(this);
+                this.CurrentSet.SetWonHandler += OnSetWon;
+            }
+
+        }
 
 
         #endregion
@@ -107,7 +117,7 @@ namespace Ixcys.Tennis
 
         public Player Server { get; set; }
 
-        public ScoreMatch ScoreMatch { get; private set; }
+        public BestOfFiveScoreMatch ScoreMatch { get; private set; }
 
         public Team TeamA { get; set; }
 

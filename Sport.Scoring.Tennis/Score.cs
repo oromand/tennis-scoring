@@ -29,11 +29,10 @@
         }
     }
 
-    public class ScoreMatch : AbstractScore
+    public abstract class ScoreMatch : AbstractScore
     {
-
-        private const string MatchA = "matchA";
-        private const string MatchB = "matchB";
+        protected const string MatchA = "matchA";
+        protected const string MatchB = "matchB";
 
         public Match Match { get; set; }
 
@@ -42,6 +41,46 @@
             this.Match = match;
         }
 
+
+        public string MatchScore
+        {
+            get { return MatchScores[scoreB][scoreA]; }
+        }
+
+        public override void UpdateGameScore(ref int playerToAddScore, ref int opponentScore)
+        {
+            if (MatchScore != MatchA && MatchScore != MatchB)
+            {
+                playerToAddScore++;
+            }
+        }
+
+        public void OnSetWonHandler(object sender, SetEvent e)
+        {
+            this.Match.OnSetWon(e.Team);
+
+            Team teamSetWon = e.Team;
+            if (teamSetWon is TeamA)
+            {
+                UpdateGameScore(ref scoreA, ref scoreB);
+            }
+            else if (teamSetWon is TeamB)
+            {
+                UpdateGameScore(ref scoreB, ref scoreA);
+            }
+
+
+            //trigger event here
+            if (MatchScore == MatchA || MatchScore == MatchB)
+            {
+                this.Match.OnMatchWon(teamSetWon);
+            }
+
+        }
+    }
+
+    public class BestOfFiveScoreMatch : ScoreMatch
+    {
         public string MatchScore
         {
             get { return MatchScores[scoreB][scoreA]; }
@@ -57,35 +96,33 @@
                 new[] {MatchB,  MatchB, MatchB,  },
             };
 
-        public override void UpdateGameScore(ref int playerToAddScore, ref int opponentScore)
+        public BestOfFiveScoreMatch(Match match) : base(match)
         {
-            if (MatchScore != MatchA && MatchScore != MatchB)
-            {
-                playerToAddScore++;
-            }
+        }
+    }
+
+    public class BestOfThreeScoreMatch : ScoreMatch
+    {
+
+        public BestOfThreeScoreMatch(Match match) : base(match)
+        {
+        }
+        public string MatchScore
+        {
+            get { return MatchScores[scoreB][scoreA]; }
         }
 
-        public void OnSetWonHandler(object sender, SetEvent e)
-        {
-            Team teamSetWon = e.Team;
-            if (teamSetWon is TeamA)
-            {
-                UpdateGameScore(ref scoreA, ref scoreB);
-            }
-            else if (teamSetWon is TeamB)
-            {
-                UpdateGameScore(ref scoreB, ref scoreA);
-            }
-
-            //trigger event here
-            if (MatchScore == MatchA || MatchScore == MatchB)
-            {
-                this.Match.OnMatchWon(teamSetWon);
-            }
-
-        }
+        private static readonly string[][] MatchScores = new[]
+           {
+                //any ending lines should get catched by engine to trigger according events
+                new[] {"0-0",   "1-0",  "2-0",  MatchA},
+                new[] {"0-1",   "1-1",  "2-1",  MatchA},
+                new[] {"0-2",   "1-2",  "2-2",  MatchA},
+                new[] {MatchB,  MatchB, MatchB,  ""},
+            };
 
     }
+
 
     public class ScoreSet : AbstractScore
     {
