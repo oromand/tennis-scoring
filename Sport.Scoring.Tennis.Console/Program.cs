@@ -46,6 +46,7 @@ namespace Ixcys.Tennis.Console
                     m.TeamScores(team.ToUpper());
                     System.Console.WriteLine("score in game is " + m.CurrentSet.CurrentGame.ScoreGame.GameScore);
                     System.Console.WriteLine("score games in set is " + m.CurrentSet.ScoreSet.SetScore);
+                    System.Console.WriteLine("Sets are " + m.ScoreMatch.MatchScore);
                 }
             }
         }

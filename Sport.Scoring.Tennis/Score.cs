@@ -4,7 +4,7 @@
     {
         protected int scoreA;
         protected int scoreB;
-        public abstract void UpdateGameScore(ref int playerToAddScore, ref int opponentScore);
+        public abstract void UpdateScore(ref int playerToAddScore, ref int opponentScore);
 
         public void AchieveScore(Team team)
         {
@@ -12,10 +12,10 @@
             switch (team.Name)
             {
                 case "A":
-                    UpdateGameScore(ref scoreA, ref scoreB);
+                    UpdateScore(ref scoreA, ref scoreB);
                     break;
                 case "B":
-                    UpdateGameScore(ref scoreB, ref scoreA);
+                    UpdateScore(ref scoreB, ref scoreA);
                     break;
                 default:
                     break;
@@ -41,50 +41,16 @@
             this.Match = match;
         }
 
+        public abstract void OnSetWonHandler(object sender, SetEvent e);
 
-        public string MatchScore
-        {
-            get { return MatchScores[scoreB][scoreA]; }
-        }
-
-        public override void UpdateGameScore(ref int playerToAddScore, ref int opponentScore)
-        {
-            if (MatchScore != MatchA && MatchScore != MatchB)
-            {
-                playerToAddScore++;
-            }
-        }
-
-        public void OnSetWonHandler(object sender, SetEvent e)
-        {
-            this.Match.OnSetWon(e.Team);
-
-            Team teamSetWon = e.Team;
-            if (teamSetWon is TeamA)
-            {
-                UpdateGameScore(ref scoreA, ref scoreB);
-            }
-            else if (teamSetWon is TeamB)
-            {
-                UpdateGameScore(ref scoreB, ref scoreA);
-            }
+        public abstract string MatchScore { get; }
 
 
-            //trigger event here
-            if (MatchScore == MatchA || MatchScore == MatchB)
-            {
-                this.Match.OnMatchWon(teamSetWon);
-            }
-
-        }
     }
 
     public class BestOfFiveScoreMatch : ScoreMatch
     {
-        public string MatchScore
-        {
-            get { return MatchScores[scoreB][scoreA]; }
-        }
+
 
         private static readonly string[][] MatchScores = new[]
            {
@@ -99,6 +65,44 @@
         public BestOfFiveScoreMatch(Match match) : base(match)
         {
         }
+
+        public override void OnSetWonHandler(object sender, SetEvent e)
+        {
+            this.Match.OnSetWon(e.Team);
+
+            Team teamSetWon = e.Team;
+            if (teamSetWon is TeamA)
+            {
+                UpdateScore(ref scoreA, ref scoreB);
+            }
+            else if (teamSetWon is TeamB)
+            {
+                UpdateScore(ref scoreB, ref scoreA);
+            }
+
+
+            //trigger event here
+            if (MatchScore == MatchA || MatchScore == MatchB)
+            {
+                this.Match.OnMatchWon(teamSetWon);
+            }
+
+        }
+
+        public override string MatchScore
+        {
+            get { return MatchScores[scoreB][scoreA]; }
+        }
+
+        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        {
+            if (MatchScore != MatchA && MatchScore != MatchB)
+            {
+                playerToAddScore++;
+            }
+        }
+
+
     }
 
     public class BestOfThreeScoreMatch : ScoreMatch
@@ -107,9 +111,17 @@
         public BestOfThreeScoreMatch(Match match) : base(match)
         {
         }
-        public string MatchScore
+        public override string MatchScore
         {
             get { return MatchScores[scoreB][scoreA]; }
+        }
+
+        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        {
+            if (MatchScore != MatchA && MatchScore != MatchB)
+            {
+                playerToAddScore++;
+            }
         }
 
         private static readonly string[][] MatchScores = new[]
@@ -120,6 +132,29 @@
                 new[] {"0-2",   "1-2",  "2-2",  MatchA},
                 new[] {MatchB,  MatchB, MatchB,  ""},
             };
+
+        public override void OnSetWonHandler(object sender, SetEvent e)
+        {
+            this.Match.OnSetWon(e.Team);
+
+            Team teamSetWon = e.Team;
+            if (teamSetWon is TeamA)
+            {
+                UpdateScore(ref scoreA, ref scoreB);
+            }
+            else if (teamSetWon is TeamB)
+            {
+                UpdateScore(ref scoreB, ref scoreA);
+            }
+
+
+            //trigger event here
+            if (MatchScore == MatchA || MatchScore == MatchB)
+            {
+                this.Match.OnMatchWon(teamSetWon);
+            }
+
+        }
 
     }
 
@@ -158,7 +193,7 @@
                 new[] { "",     "",     "",     "",     "",     SetB,   "" }
             };
 
-        public override void UpdateGameScore(ref int playerToAddScore, ref int opponentScore)
+        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
         {
             if (SetScore != SetA && SetScore != SetB)
             {
@@ -176,11 +211,11 @@
             Team teamGameWon = e.Team;
             if (teamGameWon is TeamA)
             {
-                UpdateGameScore(ref scoreA, ref scoreB);
+                UpdateScore(ref scoreA, ref scoreB);
             }
             else if (teamGameWon is TeamB)
             {
-                UpdateGameScore(ref scoreB, ref scoreA);
+                UpdateScore(ref scoreB, ref scoreA);
             }
 
             //trigger event here
@@ -232,11 +267,11 @@
             Team teamScored = args.Team;
             if (teamScored is TeamA)
             {
-                UpdateGameScore(ref scoreA, ref scoreB);
+                UpdateScore(ref scoreA, ref scoreB);
             }
             else if (teamScored is TeamB)
             {
-                UpdateGameScore(ref scoreB, ref scoreA);
+                UpdateScore(ref scoreB, ref scoreA);
             }
 
             //trigger event here
@@ -248,7 +283,7 @@
             }
         }
 
-        public override void UpdateGameScore(ref int playerToAddScore, ref int opponentScore)
+        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
         {
             if (GameScore == AdvantageA || GameScore == AdvantageB)
             {

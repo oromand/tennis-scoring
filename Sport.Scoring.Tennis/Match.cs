@@ -83,18 +83,18 @@ namespace Ixcys.Tennis
 
             if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
             {
-                EventHandler<MatchEvent> handler = MatchWonHandler;
-                MatchEvent me = new MatchEvent();
-                me.WinningTeam = TeamA;
-                if (handler != null)
-                {
-                    handler(this, me);
-                }
+                //EventHandler<MatchEvent> handler = MatchWonHandler;
+                //MatchEvent me = new MatchEvent();
+                //me.WinningTeam = TeamA;
+                //if (handler != null)
+                //{
+                //    handler(this, me);
+                //}
             }
             else
             {
                 this.CurrentSet = new Set(this);
-                this.CurrentSet.SetWonHandler += OnSetWon;
+                this.CurrentSet.SetWonHandler += ScoreMatch.OnSetWonHandler;
             }
 
         }
@@ -117,7 +117,7 @@ namespace Ixcys.Tennis
 
         public Player Server { get; set; }
 
-        public BestOfFiveScoreMatch ScoreMatch { get; private set; }
+        public ScoreMatch ScoreMatch { get; private set; }
 
         public Team TeamA { get; set; }
 
