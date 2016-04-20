@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ixcys.Tennis\Sport.Scoring.Tennis.csproj">
+    <ProjectReference Include="..\Sport.Scoring.Tennis\Sport.Scoring.Tennis.csproj">
       <Project>{124d573e-db7c-4391-92af-07bf078fbfe6}</Project>
       <Name>Sport.Scoring.Tennis</Name>
     </ProjectReference>
