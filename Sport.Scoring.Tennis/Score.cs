@@ -1,9 +1,18 @@
-﻿namespace Ixcys.Tennis
+﻿using System;
+
+namespace Sport.Tennis
 {
     public abstract class AbstractScore
     {
+        #region Fields
+
         protected int scoreA;
         protected int scoreB;
+
+        #endregion Fields
+
+        #region Methods
+
         public abstract void UpdateScore(ref int playerToAddScore, ref int opponentScore);
 
         protected void reinitScores()
@@ -11,30 +20,13 @@
             this.scoreA = 0;
             this.scoreB = 0;
         }
-    }
 
-    public abstract class ScoreMatch : AbstractScore
-    {
-        protected const string MatchA = "matchA";
-        protected const string MatchB = "matchB";
-
-        public Match Match { get; set; }
-
-        public ScoreMatch(Match match)
-        {
-            this.Match = match;
-        }
-
-        public abstract void OnSetWonHandler(object sender, SetEvent e);
-
-        public abstract string MatchScore { get; }
-
-
+        #endregion Methods
     }
 
     public class BestOfFiveScoreMatch : ScoreMatch
     {
-
+        #region Fields
 
         private static readonly string[][] MatchScores = new[]
            {
@@ -45,9 +37,26 @@
                 new[] { MatchB, MatchB, MatchB,  ""},
             };
 
+        #endregion Fields
+
+        #region Constructors
+
         public BestOfFiveScoreMatch(Match match) : base(match)
         {
         }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public override string MatchScore
+        {
+            get { return MatchScores[scoreB][scoreA]; }
+        }
+
+        #endregion Properties
+
+        #region Methods
 
         public override void OnSetWonHandler(object sender, SetEvent e)
         {
@@ -63,18 +72,11 @@
                 UpdateScore(ref scoreB, ref scoreA);
             }
 
-
             //trigger event here
             if (MatchScore == MatchA || MatchScore == MatchB)
             {
                 this.Match.OnMatchWon(teamSetWon);
             }
-
-        }
-
-        public override string MatchScore
-        {
-            get { return MatchScores[scoreB][scoreA]; }
         }
 
         public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
@@ -85,27 +87,12 @@
             }
         }
 
-
+        #endregion Methods
     }
 
     public class BestOfThreeScoreMatch : ScoreMatch
     {
-
-        public BestOfThreeScoreMatch(Match match) : base(match)
-        {
-        }
-        public override string MatchScore
-        {
-            get { return MatchScores[scoreB][scoreA]; }
-        }
-
-        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
-        {
-            if (MatchScore != MatchA && MatchScore != MatchB)
-            {
-                playerToAddScore++;
-            }
-        }
+        #region Fields
 
         private static readonly string[][] MatchScores = new[]
            {
@@ -116,6 +103,27 @@
                 new[] {"",      "",     MatchB,  ""},
             };
 
+        #endregion Fields
+
+        #region Constructors
+
+        public BestOfThreeScoreMatch(Match match) : base(match)
+        {
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public override string MatchScore
+        {
+            get { return MatchScores[scoreB][scoreA]; }
+        }
+
+        #endregion Properties
+
+        #region Methods
+
         public override void OnSetWonHandler(object sender, SetEvent e)
         {
             this.Match.OnSetWon(e.Team);
@@ -130,37 +138,141 @@
                 UpdateScore(ref scoreB, ref scoreA);
             }
 
-
             //trigger event here
             if (MatchScore == MatchA || MatchScore == MatchB)
             {
                 this.Match.OnMatchWon(teamSetWon);
             }
-
         }
 
+        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        {
+            if (MatchScore != MatchA && MatchScore != MatchB)
+            {
+                playerToAddScore++;
+            }
+        }
+
+        #endregion Methods
     }
 
+    public class ScoreGame : AbstractScore
+    {
+        #region Fields
+
+        private const string AdvantageA = "advantageA";
+        private const string AdvantageB = "advantageB";
+        private const string GameA = "gameA";
+        private const string GameB = "gameB";
+
+        private static readonly string[][] GameScores = new[]
+            {
+                new[] {"love",  "15:0",     "30:0",     "40:0",     GameA},
+                new[] {"0:15",  "15:15",    "30:15",    "40:15",    GameA},
+                new[] {"0:30",  "15:30",    "30:30",    "40:30",    GameA},
+                new[] {"0:40",  "15:40",    "30:40",    "deuce",    AdvantageA},
+                new[] { GameB,   GameB,     GameB,      AdvantageB}
+            };
+
+        #endregion Fields
+
+        #region Constructors
+
+        public ScoreGame(Game Game)
+        {
+            this.Game = Game;
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public Game Game { get; set; }
+
+        public string GameScore
+        {
+            get { return GameScores[scoreB][scoreA]; }
+        }
+
+        #endregion Properties
+
+        #region Methods
+
+        public void OnTeamScored(object sender, TeamScoredEvent args)
+        {
+            Team teamScored = args.Team;
+            if (teamScored is TeamA)
+            {
+                UpdateScore(ref scoreA, ref scoreB);
+            }
+            else if (teamScored is TeamB)
+            {
+                UpdateScore(ref scoreB, ref scoreA);
+            }
+
+            //trigger event here
+            //team who scored is certainly winning here
+            if (GameScore == GameA || GameScore == GameB)
+            {
+                this.Game.OnGameWon(teamScored);
+                this.reinitScores();
+            }
+        }
+
+        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        {
+            if (GameScore == AdvantageA || GameScore == AdvantageB)
+            {
+                opponentScore--;
+            }
+            else if (GameScore != GameA && GameScore != GameB)
+            {
+                playerToAddScore++;
+            }
+        }
+
+        #endregion Methods
+    }
+
+    public abstract class ScoreMatch : AbstractScore
+    {
+        #region Fields
+
+        protected const string MatchA = "matchA";
+        protected const string MatchB = "matchB";
+
+        #endregion Fields
+
+        #region Constructors
+
+        public ScoreMatch(Match match)
+        {
+            this.Match = match;
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public Match Match { get; set; }
+        public abstract string MatchScore { get; }
+
+        #endregion Properties
+
+        #region Methods
+
+        public abstract void OnSetWonHandler(object sender, SetEvent e);
+
+        #endregion Methods
+    }
 
     public class ScoreSet : AbstractScore
     {
+        #region Fields
 
         private const string SetA = "setA";
         private const string SetB = "setB";
         private const string TieBreak = "tieBreak";
-
-
-        public Set Set { get; set; }
-
-        public ScoreSet(Set Set)
-        {
-            this.Set = Set;
-        }
-
-        public string SetScore
-        {
-            get { return SetScores[scoreB][scoreA]; }
-        }
 
         private static readonly string[][] SetScores = new[]
            {
@@ -175,13 +287,29 @@
                 new[] { "",     "",     "",     "",     "",     SetB,  SetB }
             };
 
-        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        #endregion Fields
+
+        #region Constructors
+
+        public ScoreSet(Set Set)
         {
-            if (SetScore != SetA && SetScore != SetB)
-            {
-                playerToAddScore++;
-            }
+            this.Set = Set;
         }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public Set Set { get; set; }
+
+        public string SetScore
+        {
+            get { return SetScores[scoreB][scoreA]; }
+        }
+
+        #endregion Properties
+
+        #region Methods
 
         /// <summary>
         /// Get notified when a game has been won
@@ -216,44 +344,78 @@
             }
             else if (SetScore == TieBreak)
             {
-
+                this.Set.OnTieBreak();
             }
         }
 
+        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        {
+            if (SetScore != SetA && SetScore != SetB)
+            {
+                playerToAddScore++;
+            }
+        }
+
+        #endregion Methods
     }
 
-
-    public class ScoreGame : AbstractScore
+    public class ScoreTieBreak : AbstractScore
     {
-        private const string GameA = "gameA";
-        private const string GameB = "gameB";
-        private const string AdvantageA = "advantageA";
-        private const string AdvantageB = "advantageB";
+        #region Fields
 
-        private static readonly string[][] GameScores = new[]
-            {
-                new[] {"love",  "15:0",     "30:0",     "40:0",     GameA},
-                new[] {"0:15",  "15:15",    "30:15",    "40:15",    GameA},
-                new[] {"0:30",  "15:30",    "30:30",    "40:30",    GameA},
-                new[] {"0:40",  "15:40",    "30:40",    "deuce",    AdvantageA},
-                new[] { GameB,   GameB,     GameB,      AdvantageB}
+        private const string TieA = "tieBreakA";
+        private const string TieB = "tieBreakB";
+        private const string ShouldContinue = "shouldContinue";
+
+        //tells if 6-6 has been reached
+        //then first score having a difference of 2 would win
+        private bool shouldContinue = false;
+
+        private static readonly string[][] TieScores = new[]
+           {
+                //any ending lines should get catched by engine to trigger according events
+                new[] {"0-0",   "1-0",  "2-0",  "3-0",  "4-0",  "5-0", "6-0", TieA},
+                new[] {"0-1",   "1-1",  "2-1",  "3-1",  "4-1",  "5-1", "6-1", TieA },
+                new[] {"0-2",   "1-2",  "2-2",  "3-2",  "4-2",  "5-2", "6-2", TieA },
+                new[] {"0-3",   "1-3",  "2-3",  "3-3",  "4-3",  "5-3", "6-3", TieA },
+                new[] {"0-4",   "1-4",  "2-4",  "3-4",  "4-4",  "5-4", "6-4", TieA },
+                new[] {"0-5",   "1-5",  "2-5",  "3-5",  "4-5",  "5-5", "6-5", TieA},
+                new[] {"0-6",   "1-6",  "2-6",  "3-6",  "4-6",  "5-6", ShouldContinue, ""},
+                new[] { TieB,   TieB,   TieB,   TieB,   TieB,   TieB,   "" }
             };
 
-        public Game Game { get; set; }
+        #endregion Fields
 
-        public ScoreGame(Game Game)
+        #region Properties
+
+        public string TieScore
         {
-            this.Game = Game;
+            get { return TieScores[scoreB][scoreA]; }
         }
 
-        public string GameScore
+        public TieBreak TieBreak { get; private set; }
+
+        #endregion Properties
+
+        #region Methods
+
+        /// <summary>
+        /// Get notified when a game has been won
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnTieBreakWonHandler(object sender, GameEvent e)
         {
-            get { return GameScores[scoreB][scoreA]; }
+           
+            
         }
 
-        public void OnTeamScored(object sender, TeamScoredEvent args)
+        public void methodOnTeamScored(Team team)
         {
+            /*
             Team teamScored = args.Team;
+            
+            */
             if (teamScored is TeamA)
             {
                 UpdateScore(ref scoreA, ref scoreB);
@@ -263,28 +425,39 @@
                 UpdateScore(ref scoreB, ref scoreA);
             }
 
-            //trigger event here
-            //team who scored is certainly winning here
-            if (GameScore == GameA || GameScore == GameB)
+            if (shouldContinue && Math.Abs(scoreA - scoreB) >= 2)
             {
-                this.Game.OnGameWon(teamScored);
-                this.reinitScores();
-            }
+                this.TieBreak.OnTieBreakWon()
+                }
+        }
+
+        public ScoreTieBreak(TieBreak TieBreak)
+        {
+            this.TieBreak = TieBreak;
         }
 
         public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
         {
-            if (GameScore == AdvantageA || GameScore == AdvantageB)
+            if(!shouldContinue)
             {
-                opponentScore--;
+                if (TieScore != TieA && TieScore != TieB)
+                {
+                    playerToAddScore++;
+                }
+
+                if (TieScore == ShouldContinue)
+                {
+                    shouldContinue = true;
+                }
             }
-            else if (GameScore != GameA && GameScore != GameB)
+            else // went to 6-6, would notify GameWon upon a difference of 2
             {
                 playerToAddScore++;
+                
             }
 
         }
 
-
+        #endregion Methods
     }
 }

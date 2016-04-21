@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ixcys.Tennis
+namespace Sport.Tennis
 {
-
     public enum WinningSet : int
     {
         BEST_OF_THREE = 2,
@@ -14,6 +13,8 @@ namespace Ixcys.Tennis
     {
         //public event EventHandler<MatchEvent> MatchWonHandler;
         public event EventHandler<SetEvent> SetWonHandler;
+        public event EventHandler<TieBreakEvent> TieBreakWonHandler;
+
         //public event EventHandler<GameEvent> GameWonHandler;
 
         public List<Game> Games { get; set; }
@@ -25,6 +26,10 @@ namespace Ixcys.Tennis
         public Team WinningTeam { get; set; }
 
         public ScoreSet ScoreSet { get; private set; }
+
+        //can have a tie break if player go to 6-6
+        public TieBreak TieBreak { get; set; }
+
         public Set(Match match)
         {
             this.CurrentGame = new Game(this);
@@ -50,5 +55,10 @@ namespace Ixcys.Tennis
             }
         }
 
+        public void OnTieBreak()
+        {
+            this.TieBreak = new TieBreak(this);
+            TieBreak.TieBreakWonHandler +=  
+        }
     }
 }

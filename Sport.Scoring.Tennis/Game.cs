@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace Ixcys.Tennis
+namespace Sport.Tennis
 {
-
     public class Game
     {
         public event EventHandler<GameEvent> GameWonHandler;

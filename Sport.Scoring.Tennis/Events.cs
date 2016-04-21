@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Ixcys.Tennis
+namespace Sport.Tennis
 {
-    public abstract class ScoreEvent: EventArgs
-    {
-        public Team Team { get; set; }
-    }
-
-    public class TeamScoredEvent: ScoreEvent { }
-    public class SetEvent : ScoreEvent { }
     public class GameEvent : ScoreEvent { }
 
+    public abstract class ScoreEvent : EventArgs
+    {
+        #region Properties
+
+        public Team Team { get; set; }
+
+        #endregion Properties
+    }
+
+    public class SetEvent : ScoreEvent { }
+
+    public class TeamScoredEvent : ScoreEvent { }
+
+    public class TieBreakEvent : ScoreEvent { }
 }

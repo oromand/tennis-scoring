@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ixcys.Tennis
+namespace Sport.Tennis
 {
     public class MatchEvent : EventArgs
     {
         public Team WinningTeam { get; set; }
     }
 
-
     public class Match
     {
         //public event EventHandler<MatchEvent> MatchWonHandler;
 
         public event EventHandler<TeamScoredEvent> TeamScoredHandler;
-
 
         public Match(WinningSet nbWinningSets)
         {
@@ -27,9 +25,11 @@ namespace Ixcys.Tennis
                 case WinningSet.BEST_OF_THREE:
                     this.ScoreMatch = new BestOfThreeScoreMatch(this);
                     break;
+
                 case WinningSet.BEST_OF_FIVE:
                     this.ScoreMatch = new BestOfFiveScoreMatch(this);
                     break;
+
                 default:
                     break;
             }
@@ -39,11 +39,9 @@ namespace Ixcys.Tennis
             this.MatchStarted = false;
             this.MatchFinnished = false;
 
-
             //register events
             this.CurrentSet.CurrentGame.GameWonHandler += CurrentSet.ScoreSet.OnGameWonHandler;
             this.CurrentSet.SetWonHandler += ScoreMatch.OnSetWonHandler;
-
         }
 
         #region EVENT HANDLER
@@ -99,18 +97,16 @@ namespace Ixcys.Tennis
                 this.CurrentSet.SetWonHandler += ScoreMatch.OnSetWonHandler;
                 this.CurrentSet.CurrentGame.GameWonHandler += CurrentSet.ScoreSet.OnGameWonHandler;
             }
-
         }
 
-
-        #endregion
-
+        #endregion EVENT HANDLER
 
         #region PROPERTIES
 
         public string MatchName { get; set; }
 
         public List<Set> Sets { get; private set; }
+
         /// <summary>
         /// Should be 3 or 5 depending of settings
         /// </summary>
@@ -132,7 +128,7 @@ namespace Ixcys.Tennis
         public Boolean MatchStarted { get; set; }
         public Boolean MatchFinnished { get; set; }
 
-        #endregion
+        #endregion PROPERTIES
 
         #region METHODS
 
@@ -152,18 +148,19 @@ namespace Ixcys.Tennis
                 case "A":
                     teamScoredEvent.Team = TeamA;
                     break;
+
                 case "B":
                     teamScoredEvent.Team = TeamB;
                     break;
+
                 default: throw new Exception("Unknown team, should either be A or B");
             }
             if (handler != null)
             {
                 handler(this, teamScoredEvent);
             }
-
         }
-
     }
-    #endregion
+
+    #endregion METHODS
 }

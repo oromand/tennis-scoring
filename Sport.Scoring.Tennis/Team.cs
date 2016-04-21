@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Ixcys.Tennis
+namespace Sport.Tennis
 {
     public abstract class Team
     {
@@ -18,10 +15,10 @@ namespace Ixcys.Tennis
         }
     }
 
-    public class TeamA: Team {
-        public TeamA(string name): base(name)
+    public class TeamA : Team
+    {
+        public TeamA(string name) : base(name)
         {
-
         }
     }
 
@@ -29,7 +26,6 @@ namespace Ixcys.Tennis
     {
         public TeamB(string name) : base(name)
         {
-
         }
     }
 }
