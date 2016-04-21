@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Ixcys.Tennis.Console
+namespace Sport.Tennis.Console
 {
     class Program
     {
