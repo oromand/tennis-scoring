@@ -319,11 +319,18 @@ namespace Sport.Tennis
         public void OnGameWonHandler(object sender, GameEvent e)
         {
             this.Set.CurrentGame.GameWonHandler -= OnGameWonHandler;
+            this.Set.TeamScoredHandler -= this.Set.CurrentGame.ScoreGame.OnTeamScored;
+            _GameWon(e);
+        }
+
+        private void _GameWon(ScoreEvent e)
+        {
             this.Set.Games.Add(Set.CurrentGame);
             this.Set.CurrentGame = new Game(Set);
 
             this.Set.CurrentGame.GameWonHandler += OnGameWonHandler;
-            this.Set.Match.TeamScoredHandler += Set.CurrentGame.ScoreGame.OnTeamScored;
+            this.Set.TeamScoredHandler += this.Set.CurrentGame.ScoreGame.OnTeamScored;
+            //this.Set.Match.TeamScoredHandler += Set.CurrentGame.ScoreGame.OnTeamScored;
 
             Team teamGameWon = e.Team;
             if (teamGameWon is TeamA)
@@ -346,6 +353,13 @@ namespace Sport.Tennis
             {
                 this.Set.OnTieBreak();
             }
+        }
+
+        public void OnTieBreakWonHandler(object sender, TieBreakEvent e)
+        {
+            this.Set.TieBreak.TieBreakWonHandler -= this.OnTieBreakWonHandler;
+            this.Set.TeamScoredHandler -= this.Set.TieBreak.ScoreTieBreak.OnTeamScored;
+            _GameWon(e);
         }
 
         public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
@@ -404,18 +418,12 @@ namespace Sport.Tennis
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void OnTieBreakWonHandler(object sender, GameEvent e)
-        {
-           
-            
-        }
+        
 
-        public void methodOnTeamScored(Team team)
+        public void OnTeamScored(object sender, TeamScoredEvent e)
         {
-            /*
-            Team teamScored = args.Team;
             
-            */
+            Team teamScored = e.Team;
             if (teamScored is TeamA)
             {
                 UpdateScore(ref scoreA, ref scoreB);
@@ -425,10 +433,10 @@ namespace Sport.Tennis
                 UpdateScore(ref scoreB, ref scoreA);
             }
 
-            if (shouldContinue && Math.Abs(scoreA - scoreB) >= 2)
+            if (TieScore == TieA || TieScore == TieB || (shouldContinue && Math.Abs(scoreA - scoreB) >= 2))
             {
-                this.TieBreak.OnTieBreakWon()
-                }
+                this.TieBreak.OnTieBreakWon(teamScored);
+            }
         }
 
         public ScoreTieBreak(TieBreak TieBreak)

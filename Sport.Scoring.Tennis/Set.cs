@@ -14,6 +14,7 @@ namespace Sport.Tennis
         //public event EventHandler<MatchEvent> MatchWonHandler;
         public event EventHandler<SetEvent> SetWonHandler;
         public event EventHandler<TieBreakEvent> TieBreakWonHandler;
+        public event EventHandler<TeamScoredEvent> TeamScoredHandler;
 
         //public event EventHandler<GameEvent> GameWonHandler;
 
@@ -41,6 +42,39 @@ namespace Sport.Tennis
             //this.SetWonHandler += this.Match.ScoreMatch.OnSetWonHandler;
         }
 
+        //protected void OnTeamScoredGame(object sender, TeamScoredEvent args)
+        //{
+        //    this.CurrentGame.ScoreGame.OnTeamScored(sender, args);
+        //}
+
+        //protected void OnTeamScoredTieBreak(object sender, TeamScoredEvent args)
+        //{
+        //    this.TieBreak.ScoreTieBreak.OnTeamScored(sender, args);
+        //}
+
+        public void OnTeamScored(object sender, TeamScoredEvent args)
+        {
+
+            EventHandler<TeamScoredEvent> handler = TeamScoredHandler;
+            if (handler != null)
+            {
+                TeamScoredEvent setEvent = new TeamScoredEvent()
+                {
+                    Team = args.Team,
+                };
+                //would be game or tie break depending of game advancement
+                handler(this, setEvent);
+            }
+            //if (this.TieBreak == null)
+            //{
+            //    this.OnTeamScoredGame(sender, args);
+            //}
+            //else
+            //{
+            //    this.OnTeamScoredTieBreak(sender, args);
+            //}
+        }
+
         public void OnSetWon(Team setWonTeam)
         {
             //if set won
@@ -58,7 +92,9 @@ namespace Sport.Tennis
         public void OnTieBreak()
         {
             this.TieBreak = new TieBreak(this);
-            TieBreak.TieBreakWonHandler +=  
+            this.TieBreak.TieBreakWonHandler += this.ScoreSet.OnTieBreakWonHandler;
+            this.TeamScoredHandler -= CurrentGame.ScoreGame.OnTeamScored;
+            this.TeamScoredHandler += TieBreak.ScoreTieBreak.OnTeamScored;
         }
     }
 }

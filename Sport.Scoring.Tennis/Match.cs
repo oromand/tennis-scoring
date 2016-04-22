@@ -34,12 +34,13 @@ namespace Sport.Tennis
                     break;
             }
             //dispatch event to current handling ScoreGame object
-            this.TeamScoredHandler += this.CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
+            this.TeamScoredHandler += this.CurrentSet.OnTeamScored;
 
             this.MatchStarted = false;
             this.MatchFinnished = false;
 
             //register events
+            this.CurrentSet.TeamScoredHandler += CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
             this.CurrentSet.CurrentGame.GameWonHandler += CurrentSet.ScoreSet.OnGameWonHandler;
             this.CurrentSet.SetWonHandler += ScoreMatch.OnSetWonHandler;
         }
@@ -93,7 +94,9 @@ namespace Sport.Tennis
             else
             {
                 this.CurrentSet = new Set(this);
-                this.TeamScoredHandler += CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
+                this.CurrentSet.TeamScoredHandler += CurrentSet.CurrentGame.ScoreGame.OnTeamScored;
+                this.TeamScoredHandler += CurrentSet.OnTeamScored;
+
                 this.CurrentSet.SetWonHandler += ScoreMatch.OnSetWonHandler;
                 this.CurrentSet.CurrentGame.GameWonHandler += CurrentSet.ScoreSet.OnGameWonHandler;
             }
