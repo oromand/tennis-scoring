@@ -44,7 +44,15 @@ namespace Sport.Tennis.Console
                 else
                 {
                     m.TeamScores(team.ToUpper());
-                    System.Console.WriteLine("score in game is " + m.CurrentSet.CurrentGame.ScoreGame.GameScore);
+                    System.Console.Write("score in game is " + m.CurrentSet.CurrentGame.ScoreGame.GameScore);
+                    if(m.CurrentSet.TieBreak != null)
+                    {
+                        System.Console.WriteLine("[" + m.CurrentSet.TieBreak.ScoreTieBreak.TieScore +"]");
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("");
+                    }
                     System.Console.WriteLine("score games in set is " + m.CurrentSet.ScoreSet.SetScore);
                     System.Console.WriteLine("Sets are " + m.ScoreMatch.MatchScore);
                 }

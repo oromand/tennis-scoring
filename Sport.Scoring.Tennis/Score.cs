@@ -229,6 +229,7 @@ namespace Sport.Tennis
             {
                 playerToAddScore++;
             }
+            this.Game.Points.Add(new Point() { Value = this.GameScore });
         }
 
         #endregion Methods
@@ -404,7 +405,18 @@ namespace Sport.Tennis
 
         public string TieScore
         {
-            get { return TieScores[scoreB][scoreA]; }
+            get
+            {
+                if (!shouldContinue)
+                {
+                    return TieScores[scoreB][scoreA];
+                }
+                else
+                {
+                    return scoreA.ToString() + ":" + scoreB.ToString();
+                }
+
+            }
         }
 
         public TieBreak TieBreak { get; private set; }

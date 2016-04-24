@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Sport.Tennis
 {
@@ -10,13 +11,15 @@ namespace Sport.Tennis
 
         public ScoreGame ScoreGame { get; private set; }
 
+        public List<Point> Points { get; private set; }
+
         public Set Set { get; set; }
 
         public Game(Set set)
         {
             this.Set = set;
             //this.GameWonHandler += Set.ScoreSet.OnGameWonHandler;
-
+            this.Points = new List<Point>();
             this.ScoreGame = new ScoreGame(this);
         }
 
