@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sport.Tennis
 {
-    public class Game
+    public class Game : IGame
     {
         public event EventHandler<GameEvent> GameWonHandler;
 
@@ -13,9 +13,9 @@ namespace Sport.Tennis
 
         public List<Point> Points { get; private set; }
 
-        public Set Set { get; set; }
+        public ISet Set { get; set; }
 
-        public Game(Set set)
+        public Game(ISet set)
         {
             this.Set = set;
             //this.GameWonHandler += Set.ScoreSet.OnGameWonHandler;

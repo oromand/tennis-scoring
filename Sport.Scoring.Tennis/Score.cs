@@ -13,14 +13,31 @@ namespace Sport.Tennis
 
         #region Methods
 
-        public abstract void UpdateScore(ref int playerToAddScore, ref int opponentScore);
+        public int ScoreA
+        {
+            get
+            {
+                return scoreA;
+            }
+            private set { }
+        }
+
+        public int ScoreB
+        {
+            get
+            {
+                return scoreB;
+            }
+            private set { }
+        }
+
+        protected abstract void UpdateScore(ref int playerToAddScore, ref int opponentScore);
 
         protected void reinitScores()
         {
             this.scoreA = 0;
             this.scoreB = 0;
         }
-
         #endregion Methods
     }
 
@@ -79,7 +96,7 @@ namespace Sport.Tennis
             }
         }
 
-        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        protected override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
         {
             if (MatchScore != MatchA && MatchScore != MatchB)
             {
@@ -145,7 +162,7 @@ namespace Sport.Tennis
             }
         }
 
-        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        protected override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
         {
             if (MatchScore != MatchA && MatchScore != MatchB)
             {
@@ -178,7 +195,7 @@ namespace Sport.Tennis
 
         #region Constructors
 
-        public ScoreGame(Game Game)
+        public ScoreGame(IGame Game)
         {
             this.Game = Game;
         }
@@ -187,7 +204,7 @@ namespace Sport.Tennis
 
         #region Properties
 
-        public Game Game { get; set; }
+        public IGame Game { get; set; }
 
         public string GameScore
         {
@@ -219,7 +236,7 @@ namespace Sport.Tennis
             }
         }
 
-        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        protected override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
         {
             if (GameScore == AdvantageA || GameScore == AdvantageB)
             {
@@ -324,6 +341,21 @@ namespace Sport.Tennis
             _GameWon(e);
         }
 
+        public void OnTieBreakWonHandler(object sender, TieBreakEvent e)
+        {
+            this.Set.TieBreak.TieBreakWonHandler -= this.OnTieBreakWonHandler;
+            this.Set.TeamScoredHandler -= this.Set.TieBreak.ScoreTieBreak.OnTeamScored;
+            _GameWon(e);
+        }
+
+        protected override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        {
+            if (SetScore != SetA && SetScore != SetB)
+            {
+                playerToAddScore++;
+            }
+        }
+
         private void _GameWon(ScoreEvent e)
         {
             this.Set.Games.Add(Set.CurrentGame);
@@ -355,22 +387,6 @@ namespace Sport.Tennis
                 this.Set.OnTieBreak();
             }
         }
-
-        public void OnTieBreakWonHandler(object sender, TieBreakEvent e)
-        {
-            this.Set.TieBreak.TieBreakWonHandler -= this.OnTieBreakWonHandler;
-            this.Set.TeamScoredHandler -= this.Set.TieBreak.ScoreTieBreak.OnTeamScored;
-            _GameWon(e);
-        }
-
-        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
-        {
-            if (SetScore != SetA && SetScore != SetB)
-            {
-                playerToAddScore++;
-            }
-        }
-
         #endregion Methods
     }
 
@@ -378,16 +394,11 @@ namespace Sport.Tennis
     {
         #region Fields
 
+        private const string ShouldContinue = "shouldContinue";
         private const string TieA = "tieBreakA";
         private const string TieB = "tieBreakB";
-        private const string ShouldContinue = "shouldContinue";
-
-        //tells if 6-6 has been reached
-        //then first score having a difference of 2 would win
-        private bool shouldContinue = false;
-
         private static readonly string[][] TieScores = new[]
-           {
+                   {
                 //any ending lines should get catched by engine to trigger according events
                 new[] {"0-0",   "1-0",  "2-0",  "3-0",  "4-0",  "5-0", "6-0", TieA},
                 new[] {"0-1",   "1-1",  "2-1",  "3-1",  "4-1",  "5-1", "6-1", TieA },
@@ -399,9 +410,14 @@ namespace Sport.Tennis
                 new[] { TieB,   TieB,   TieB,   TieB,   TieB,   TieB,   "" }
             };
 
+        //tells if 6-6 has been reached
+        //then first score having a difference of 2 would win
+        private bool shouldContinue = false;
         #endregion Fields
 
         #region Properties
+
+        public TieBreak TieBreak { get; private set; }
 
         public string TieScore
         {
@@ -418,9 +434,6 @@ namespace Sport.Tennis
 
             }
         }
-
-        public TieBreak TieBreak { get; private set; }
-
         #endregion Properties
 
         #region Methods
@@ -430,7 +443,12 @@ namespace Sport.Tennis
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        
+
+
+        public ScoreTieBreak(TieBreak TieBreak)
+        {
+            this.TieBreak = TieBreak;
+        }
 
         public void OnTeamScored(object sender, TeamScoredEvent e)
         {
@@ -450,13 +468,7 @@ namespace Sport.Tennis
                 this.TieBreak.OnTieBreakWon(teamScored);
             }
         }
-
-        public ScoreTieBreak(TieBreak TieBreak)
-        {
-            this.TieBreak = TieBreak;
-        }
-
-        public override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
+        protected override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
         {
             if(!shouldContinue)
             {

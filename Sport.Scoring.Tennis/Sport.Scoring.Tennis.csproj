@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="Events.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="IGame.cs" />
+    <Compile Include="ISet.cs" />
     <Compile Include="Match.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Point.cs" />

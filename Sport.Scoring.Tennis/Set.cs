@@ -9,7 +9,7 @@ namespace Sport.Tennis
         BEST_OF_FIVE = 3
     };
 
-    public class Set
+    public class Set : ISet
     {
         //public event EventHandler<MatchEvent> MatchWonHandler;
         public event EventHandler<SetEvent> SetWonHandler;
