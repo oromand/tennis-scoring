@@ -177,10 +177,10 @@ namespace Sport.Tennis
     {
         #region Fields
 
-        private const string AdvantageA = "advantageA";
-        private const string AdvantageB = "advantageB";
-        private const string GameA = "gameA";
-        private const string GameB = "gameB";
+        public const string AdvantageA = "advantageA";
+        public const string AdvantageB = "advantageB";
+        public const string GameA = "gameA";
+        public const string GameB = "gameB";
 
         private static readonly string[][] GameScores = new[]
             {
@@ -225,7 +225,7 @@ namespace Sport.Tennis
             else if (teamScored is TeamB)
             {
                 UpdateScore(ref scoreB, ref scoreA);
-            }
+            } else { throw new Exception("Unknown team"); }
 
             //trigger event here
             //team who scored is certainly winning here
