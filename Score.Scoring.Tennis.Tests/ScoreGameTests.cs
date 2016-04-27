@@ -10,6 +10,8 @@ namespace Sport.Tennis.Tests
     {
         ScoreGame scoreGame;
         Mock<IGame> game;
+        TeamA teamA = new TeamA("A");
+        TeamB teamB = new TeamB("B");
 
         public void beforeTest()
         {
@@ -50,10 +52,10 @@ namespace Sport.Tennis.Tests
                 switch (currentScore)
                 {
                     case 'A':
-                        hittingTeam = new TeamA("A");
+                        hittingTeam = teamA;
                         break;
                     case 'B':
-                        hittingTeam = new TeamB("B");
+                        hittingTeam = teamB;
                         break;
                 }
                 this.scoreGame.OnTeamScored(null, new TeamScoredEvent() { Team = hittingTeam });
@@ -62,13 +64,12 @@ namespace Sport.Tennis.Tests
             Assert.Equal(expectedScoreGame, this.scoreGame.GameScore);
         }
 
-        [Theory]
-        [InlineData("AAABBBAA", ScoreGame.GameB)]
-        public void UpdateScoreWhenGameWonTeamA(string hits, string expectedScoreGame)
+        [Fact]
+        public void UpdateScoreWhenGameWonTeamA()
         {
             beforeTest();
-            TeamA teamA = new TeamA("A");
-            TeamB teamB = new TeamB("B");
+            string hits = "AAABBBAA";
+            
             Team hittingTeam = null;
             this.game.Setup(g => g.OnGameWon(teamA)).Verifiable("OnGameWon wasn't called");
             foreach (var currentScore in hits)
@@ -86,7 +87,8 @@ namespace Sport.Tennis.Tests
             }
 
             game.Verify();
-            //Assert.Equal(expectedScoreGame, this.scoreGame.GameScore);
+            Assert.Equal(this.scoreGame.ScoreA, 0);
+            Assert.Equal(this.scoreGame.ScoreB, 0);
         }
 
         [Theory]
@@ -94,8 +96,6 @@ namespace Sport.Tennis.Tests
         public void UpdateScoreWhenGameWonTeamB(string hits, string expectedScoreGame)
         {
             beforeTest();
-            TeamA teamA = new TeamA("A");
-            TeamB teamB = new TeamB("B");
             Team hittingTeam = null;
             this.game.Setup(g => g.OnGameWon(teamB)).Verifiable("OnGameWon wasn't called");
             foreach (var currentScore in hits)
@@ -113,7 +113,9 @@ namespace Sport.Tennis.Tests
             }
 
             game.Verify();
-            //Assert.Equal(expectedScoreGame, this.scoreGame.GameScore);
+            //call to reinitScores occured
+            Assert.Equal(this.scoreGame.ScoreA, 0);
+            Assert.Equal(this.scoreGame.ScoreB, 0);
         }
 
     }
