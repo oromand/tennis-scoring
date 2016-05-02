@@ -77,8 +77,7 @@ namespace Sport.Tennis
 
         public override void OnSetWonHandler(object sender, SetEvent e)
         {
-            this.Match.OnSetWon(e.Team);
-
+            
             Team teamSetWon = e.Team;
             if (teamSetWon is TeamA)
             {
@@ -90,10 +89,8 @@ namespace Sport.Tennis
             }
 
             //trigger event here
-            if (MatchScore == MatchA || MatchScore == MatchB)
-            {
-                this.Match.OnMatchWon(teamSetWon);
-            }
+            this.Match.OnSetWon(e.Team);
+
         }
 
         protected override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
@@ -143,8 +140,6 @@ namespace Sport.Tennis
 
         public override void OnSetWonHandler(object sender, SetEvent e)
         {
-            this.Match.OnSetWon(e.Team);
-
             Team teamSetWon = e.Team;
             if (teamSetWon is TeamA)
             {
@@ -155,11 +150,8 @@ namespace Sport.Tennis
                 UpdateScore(ref scoreB, ref scoreA);
             }
 
-            //trigger event here
-            if (MatchScore == MatchA || MatchScore == MatchB)
-            {
-                this.Match.OnMatchWon(teamSetWon);
-            }
+            this.Match.OnSetWon(e.Team);
+            
         }
 
         protected override void UpdateScore(ref int playerToAddScore, ref int opponentScore)
@@ -288,9 +280,9 @@ namespace Sport.Tennis
     {
         #region Fields
 
-        private const string SetA = "setA";
-        private const string SetB = "setB";
-        private const string TieBreak = "tieBreak";
+        public const string SetA = "setA";
+        public const string SetB = "setB";
+        public const string TieBreak = "tieBreak";
 
         private static readonly string[][] SetScores = new[]
            {
@@ -309,7 +301,7 @@ namespace Sport.Tennis
 
         #region Constructors
 
-        public ScoreSet(Set Set)
+        public ScoreSet(ISet Set)
         {
             this.Set = Set;
         }
@@ -318,7 +310,7 @@ namespace Sport.Tennis
 
         #region Properties
 
-        public Set Set { get; set; }
+        public ISet Set { get; set; }
 
         public string SetScore
         {

@@ -83,13 +83,7 @@ namespace Sport.Tennis
 
             if (nbSetTeamA >= this.NbWinningSets || nbSetTeamB >= this.NbWinningSets)
             {
-                //EventHandler<MatchEvent> handler = MatchWonHandler;
-                //MatchEvent me = new MatchEvent();
-                //me.WinningTeam = TeamA;
-                //if (handler != null)
-                //{
-                //    handler(this, me);
-                //}
+                this.OnMatchWon(winningTeam);
             }
             else
             {

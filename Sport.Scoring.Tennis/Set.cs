@@ -18,9 +18,9 @@ namespace Sport.Tennis
 
         //public event EventHandler<GameEvent> GameWonHandler;
 
-        public List<Game> Games { get; set; }
+        public List<IGame> Games { get; set; }
 
-        public Game CurrentGame { get; set; }
+        public IGame CurrentGame { get; set; }
 
         public Match Match { get; set; }
 
@@ -38,7 +38,7 @@ namespace Sport.Tennis
             this.ScoreSet = new ScoreSet(this);
 
             this.Match = match;
-            this.Games = new List<Game>();
+            this.Games = new List<IGame>();
             //this.SetWonHandler += this.Match.ScoreMatch.OnSetWonHandler;
         }
 

@@ -5,8 +5,8 @@ namespace Sport.Tennis
 {
     public interface ISet
     {
-        Game CurrentGame { get; set; }
-        List<Game> Games { get; set; }
+        IGame CurrentGame { get; set; }
+        List<IGame> Games { get; set; }
         Match Match { get; set; }
         ScoreSet ScoreSet { get; }
         TieBreak TieBreak { get; set; }
