@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sport.Scoring.Tennis", "Spo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sport.Scoring.Tennis.Console", "Sport.Scoring.Tennis.Console\Sport.Scoring.Tennis.Console.csproj", "{01F269A2-C1D9-4C46-B65E-A8AF69A2EEB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Score.Scoring.Tennis.Tests", "Score.Scoring.Tennis.Tests\Score.Scoring.Tennis.Tests.csproj", "{D7A327E0-1C0C-498A-A613-81B5EA11D401}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sport.Scoring.Tennis.Tests", "Score.Scoring.Tennis.Tests\Sport.Scoring.Tennis.Tests.csproj", "{D7A327E0-1C0C-498A-A613-81B5EA11D401}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

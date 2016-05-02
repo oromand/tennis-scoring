@@ -34,3 +34,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: InternalsVisibleTo("Sport.Scoring.Tennis.Tests")]
+[assembly: InternalsVisibleTo("Ixcys.Tennis.Explorables")]
+[assembly: InternalsVisibleTo("Sport.Scoring.Tennis.Tests1")]
+
